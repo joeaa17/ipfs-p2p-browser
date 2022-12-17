@@ -16,9 +16,9 @@
     "@libp2p/webrtc-star": "^5.0.2",
     "@libp2p/websockets": "^5.0.0",
     "libp2p": "^0.41.0",
-    "uniq": "^1.0.1"
+    "uniq": "^1.0.1",
+    "vite": "^2.8.6"
   },
   "devDependencies": {
-    "vite": "^2.8.6"
   }
 }
