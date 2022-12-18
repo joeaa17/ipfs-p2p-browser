@@ -1,3 +1,6 @@
+
+require('dotenv').config();
+
 import { execa } from 'execa'
 import { chromium } from 'playwright'
 import path from 'path'
@@ -6,7 +9,7 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export async function test () {
-  let url = 'http://localhost:3000'
+  let url = 'http://localhost:'+ (process.env.PORT || 3000)
 
   const proc = execa('vite', [], {
     preferLocal: true,
