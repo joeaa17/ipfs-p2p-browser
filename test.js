@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export async function test () {
-  let url = 'http://localhost:3000'
+  let url = 'https://ipfs-p2p-browser.herokuapp.com/'
 
   const proc = execa('vite', [], {
     preferLocal: true,
