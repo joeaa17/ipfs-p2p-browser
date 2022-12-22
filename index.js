@@ -6,6 +6,12 @@ import { mplex } from '@libp2p/mplex'
 import { bootstrap } from '@libp2p/bootstrap'
 
 document.addEventListener('DOMContentLoaded', async () => {
+  
+  let peerC = []
+  let dialC = []
+  let connectedC = []
+  let disconnectedC = []
+  
   const wrtcStar = webRTCStar()
 
   // Create our libp2p node
@@ -43,39 +49,53 @@ document.addEventListener('DOMContentLoaded', async () => {
   const status = document.getElementById('status')
   const output = document.getElementById('output')
 
-  output.textContent = ''
+  output.innerHTML = ''
 
-  function log (txt) {
+  function log (txt, clas = 'log') {
     console.info(txt)
-    output.textContent += `${txt.trim()}\n`
+    output.innerHTML = `<p class='${clas}'> ${txt}</br> </p>` + output.innerHTML
   }
 
   // Listen for new peers
   libp2p.addEventListener('peer:discovery', (evt) => {
     const peer = evt.detail
-    log(`Found peer ${peer.id.toString()}`)
+    log(`Found peer ${peer.id.toString()}`, 'peer')
+
+    peerC.push(peer)
+    document.getElementById('peers').innerText = `${peerC.length}`
 
     // dial them when we discover them
     libp2p.dial(evt.detail.id).catch(err => {
-      log(`Could not dial ${evt.detail.id}`, err)
+      log(`Could not dial ${evt.detail.id} :` + err, 'dial')
+
+      dialC.push(err)
+      document.getElementById('dial').innerText = `${dialC.length}`
+
     })
   })
 
   // Listen for new connections to peers
   libp2p.connectionManager.addEventListener('peer:connect', (evt) => {
     const connection = evt.detail
-    log(`Connected to ${connection.remotePeer.toString()}`)
+    log(`Connected to ${connection.remotePeer.toString()}`, 'connected')
+    document.getElementById('connected').innerText = `${connectedC.length}`
+
+    connectedC.push(connection)
   })
 
   // Listen for peers disconnecting
   libp2p.connectionManager.addEventListener('peer:disconnect', (evt) => {
     const connection = evt.detail
-    log(`Disconnected from ${connection.remotePeer.toString()}`)
+    log(`Disconnected from ${connection.remotePeer.toString()}`, 'disconnected')
+    disconnectedC.push(connection)
+    document.getElementById('disconnected').innerText = `${disconnectedC.length}`
   })
 
   status.innerText = 'libp2p started!'
-  log(`libp2p id is ${libp2p.peerId.toString()}`)
+  document.getElementById('user-id').innerText = `${libp2p.peerId.toString()}`
+  // log(`libp2p id is ${libp2p.peerId.toString()}`)
 
   // Export libp2p to the window so you can play with the API
   window.libp2p = libp2p
+
 })
